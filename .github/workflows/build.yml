@@ -9,21 +9,24 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Python 3.12
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt pyinstaller
+        pip install -r requirements.txt pyinstaller==6.8.0
 
     - name: Build exe
       run: |
-        pyinstaller --onefile --noconsole app/main.py --name SolanaDesk
+        pyinstaller --onefile --noconsole ^
+          --name SolanaDesk ^
+          --collect-all PySide6 --collect-all solders --collect-all solana ^
+          app/main.py
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
